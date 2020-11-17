@@ -17,7 +17,7 @@
             <!-- 切换页tabs -->
             <a-row class="login-tabs">
               <a-col :span="24">
-                <a-tabs >
+                <a-tabs>
                   <!-- 账号密码登录 -->
                   <a-tab-pane key="1" tab="账户密码登录">
                     <!-- 用户账号 -->
@@ -89,7 +89,9 @@
             <!-- 确定按钮 -->
             <a-row class="Sign-in">
               <a-col :span="24">
-                <a-button @click="onSubmit" type="primary" size="large" block>登录</a-button>
+                <a-button @click="onSubmit" type="primary" size="large" block
+                  >登录</a-button
+                >
               </a-col>
             </a-row>
 
@@ -122,19 +124,27 @@ import {
   TaobaoCircleOutlined,
   WeiboCircleOutlined,
 } from "@ant-design/icons-vue";
+
+// 引入http方法
+import { httpPost } from "@/utils/http";
+// 引入接口
+import { user } from "@/api";
+// 引入全局提示消息框
+import { message } from "ant-design-vue";
+
 export default {
   data() {
     return {
       form: {
-        username: "",
-        password: "",
+        username: "admin",
+        password: "123456",
       },
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           { min: 3, max: 5, message: "用户名长度在3-5之间", trigger: "blur" },
         ],
-         password: [
+        password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 16, message: "密码长度在6-16之间", trigger: "blur" },
         ],
@@ -155,14 +165,36 @@ export default {
       this.$refs.ruleForm
         .validate()
         .then(() => {
-          console.log('values', this.form);
+          let params = {
+            username: this.form.username,
+            password: this.form.password,
+          };
+          let url = user.UserLogin;
+
+          httpPost(url, params)
+            .then((response) => {
+              let { data, meta } = response;
+
+              if (meta.status == 400) {
+                 message.error(meta.msg);
+              }
+
+              if (meta.status == 200) {
+                 message.success(meta.msg);
+                window.sessionStorage.setItem("token", data.token);
+                this.$router.push("/home");
+              }
+            })
+            .catch((error) => {
+              throw new Error(error);
+            });
         })
-        .catch(error => {
-          console.log('error', error);
+        .catch((error) => {
+          console.log("error", error);
         });
     },
-  }
-}
+  },
+};
 </script>
 
 <style  scoped>
@@ -176,7 +208,7 @@ export default {
 }
 .ant-form {
   width: 365px;
-  height: 500px;
+  /* height: 500px; */
   margin: 0 auto;
 }
 .login-title {
