@@ -4,17 +4,47 @@
       <div class="logo">
         <img src="../assets/logo.png" alt="" />
         <span style="color: #fff">后台管理系统</span>
-        
       </div>
-      <a-menu theme="dark" v-model:selectedKeys="selectedKeys" mode="inline">
-        <a-sub-menu key="sub1">
-          <template #title>
-            <span><user-outlined /><span>用户管理</span></span>
+      <a-menu
+        theme="dark"
+        mode="inline"
+        :openKeys="openKeys"
+        @openChange="onOpenChange"
+      >
+        <a-sub-menu v-for="item in menuList" :key="item.id">
+          <template #title v-if="item.path == 'users'">
+            <span
+              ><user-outlined /><span>{{ item.authName }}</span></span
+            >
           </template>
-          
-          <a-menu-item key="1"><appstore-outlined /> <router-link to="userlist">用户列表</router-link> </a-menu-item>
+          <template #title v-else-if="item.path == 'rights'">
+            <span
+              ><CodeSandboxOutlined /><span>{{ item.authName }}</span></span
+            >
+          </template>
+          <template #title v-else-if="item.path == 'goods'">
+            <span
+              ><ShoppingOutlined /><span>{{ item.authName }}</span></span
+            >
+          </template>
+          <template #title v-else-if="item.path == 'orders'">
+            <span
+              ><ContainerOutlined /><span>{{ item.authName }}</span></span
+            >
+          </template>
+          <template #title v-else-if="item.path == 'reports'">
+            <span
+              ><AreaChartOutlined /><span>{{ item.authName }}</span></span
+            >
+          </template>
+
+          <a-menu-item v-for="subitem in item.children" :key="subitem.id">
+            <appstore-outlined />
+            <router-link :to="item.path" style="color: #fff; display: inline">{{
+              subitem.authName
+            }}</router-link>
+          </a-menu-item>
         </a-sub-menu>
-        
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -29,12 +59,13 @@
           class="trigger"
           @click="() => (collapsed = !collapsed)"
         />
-        <a-button style="float:right; margin: 16px 24px;" @click="handleBack"> 退出</a-button>
+        <a-button style="float: right; margin: 16px 24px" @click="handleBack">
+          退出</a-button
+        >
       </a-layout-header>
 
-
       <a-layout-content style="margin: 0 16px">
-      <router-view></router-view>
+        <router-view></router-view>
       </a-layout-content>
       <a-layout-footer style="text-align: center">
         Ant Design ©2018 Created by Ant UED
@@ -48,7 +79,16 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   AppstoreOutlined,
+  ShoppingOutlined,
+  ContainerOutlined,
+  AreaChartOutlined,
+  CodeSandboxOutlined,
 } from "@ant-design/icons-vue";
+
+// 引入请求方法 httpGet
+import { httpGet } from "@/utils/http";
+// 引入请求路径
+import { rights } from "@/api";
 
 export default {
   components: {
@@ -56,19 +96,70 @@ export default {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     AppstoreOutlined,
+    ShoppingOutlined,
+    ContainerOutlined,
+    AreaChartOutlined,
+    CodeSandboxOutlined,
   },
   data() {
     return {
       collapsed: false,
       // selectedKeys: ['1'],
+      // 侧边栏菜单
+      menuList: [],
+      // 默认打开的那一项
+      openKeys: [],
+      // 所有项
+      rootSubmenuKeys: [],
     };
   },
-  methods:{
-    handleBack(){
-      window.sessionStorage.removeItem("token")
-      this.$router.push("/login")
+
+  created() {
+    this.getMenuList();
+  },
+
+  methods: {
+    // 退出
+    handleBack() {
+      // 删除token
+      window.sessionStorage.removeItem("token");
+      // 跳转页面到login
+      this.$router.push("/login");
+    },
+    getMenuList() {
+      httpGet(rights.AsideMenus)
+        .then((response) => {
+          let { data, meta } = response;
+
+          // console.log(data, meta);
+
+          if (meta.status == 200) {
+            this.menuList = data;
+
+            // 保存一级菜单id
+            this.menuList.forEach((item) => {
+              this.rootSubmenuKeys.push(item.id);
+            });
+            // console.log(this.rootSubmenuKeys)
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+     // 点击当前 关闭其他菜单
+     onOpenChange(openKeys) {
+      //  获取最后一次选中的openKey
+      const latestOpenKey = openKeys.find(key => this.openKeys.indexOf(key) === -1);
+      // 如果最后一次openkye在rootSubmenuKey中找不到
+      if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+        // 就把点击的哪个openkey放到默认打开的那个数组
+        this.openKeys = openKeys;
+      } else {
+        this.openKeys = latestOpenKey ? [latestOpenKey] : [];
+      }
     }
-  }
+  },
 };
 </script>
 
@@ -86,7 +177,7 @@ export default {
   margin-left: 10px;
 }
 
-.trigger{
+.trigger {
   display: inline-block;
   margin-left: 20px;
 }

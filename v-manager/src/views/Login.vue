@@ -169,7 +169,7 @@ export default {
             username: this.form.username,
             password: this.form.password,
           };
-          let url = user.UserLogin;
+          let url = user.LoginUser;
 
           httpPost(url, params)
             .then((response) => {

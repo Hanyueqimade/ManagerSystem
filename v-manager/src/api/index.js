@@ -1,5 +1,9 @@
 // 如果是关于用户的接口 导出一个对象
 export const user = {
-  UserLogin: "login"
+  LoginUser: "login",
+  GetUsers:"users"
 }
-// 如果是商品的接口 导出一个对象
+
+export const rights = {
+  AsideMenus:"menus"
+}
