@@ -26,7 +26,8 @@ const routes = [
           {
         path: "/users",
         component: () => import(/* webpackChunkName: "about" */ '@/components/Users'),
-      }
+      },
+          
     ]
   }
 ]
