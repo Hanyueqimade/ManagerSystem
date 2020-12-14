@@ -6,10 +6,6 @@ import router from "./routers";
 import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
 
-// 富文本编辑器
-import CKEditor from '@ckeditor/ckeditor5-vue';
-// createApp({ /* options */ }).use(CKEditor).mount( /* DOM element */);
-
 //  使用axios
 // import axios from "axios";
 // 本地地址(你在自己的电脑上配置了后台服务和mysql数据库)
@@ -23,5 +19,4 @@ let app = createApp(App);
 app
   .use(router)
   .use(Antd)
-  .use(CKEditor)
   .mount("#app");

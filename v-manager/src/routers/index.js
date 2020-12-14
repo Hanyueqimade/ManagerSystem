@@ -5,15 +5,15 @@ import Login from "../views/Login.vue"
 const routes = [
   {
     path: '/',
-    redirect:"/login"
+    redirect: "/login"
   },
-  {name: "Login", path: "/login", component: Login },
+  { name: "Login", path: "/login", component: Login },
   {
     path: '/home',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '@/views/Home.vue'),
+    component: () => import('@/views/Home.vue'),
     children: [
       {
         path: '/home',
@@ -21,13 +21,45 @@ const routes = [
       },
       {
         path: "/welcome",
-        component: () => import(/* webpackChunkName: "about" */ '@/components/Welcome'),
+        component: () => import('@/components/Welcome'),
       },
-          {
+      {
         path: "/users",
-        component: () => import(/* webpackChunkName: "about" */ '@/components/Users'),
+        component: () => import('@/components/Users'),
       },
-          
+
+      {
+        path: "/rights",
+        component: () => import('@/components/Rights'),
+      },
+      {
+        path: "/roles",
+        component: () => import('@/components/Roles'),
+      },
+      {
+        path: "/orders",
+        component: () => import('@/components/Orders'),
+      },
+      {
+        path: "/reports",
+        component: () => import('@/components/Reports'),
+      }, 
+      {
+        path: "/goods",
+        component: () => import('@/components/Goods'),
+      },
+      {
+        path: "/goods/add",
+        component: () => import('@/components/GoodsAdd'),
+      },
+      {
+        path: "/categories",
+        component: () => import('@/components/Categories'),
+      },
+      {
+        path: "/params",
+        component: () => import('@/components/Params'),
+      },
     ]
   }
 ]

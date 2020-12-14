@@ -29,7 +29,6 @@ export const role = {
 
 
 export const orders = {
-
   GetOrdersList: "orders"
 
 }
@@ -37,7 +36,5 @@ export const orders = {
 
 export const goods = {
   GetGoodsList: "goods",
-  GetCategories: "categories",
-  AddGoods: "goods",
-  DelGoods:"goods/"
+  Getcategories:"categories"
 }

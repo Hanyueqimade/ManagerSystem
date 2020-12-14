@@ -40,7 +40,7 @@
 
           <a-menu-item v-for="subitem in item.children" :key="subitem.id">
             <appstore-outlined />
-            <router-link :to="'/'+subitem.path" style="color: #fff; display: inline">{{
+            <router-link :to="subitem.path" style="color: #fff; display: inline">{{
               subitem.authName
             }}</router-link>
           </a-menu-item>
